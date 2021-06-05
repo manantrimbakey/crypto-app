@@ -1,0 +1,59 @@
+<template>
+    <div class="slds-m-around_medium">
+        <lightning-layout multiple-rows="true">
+            <!-- SECTION : Page Header with Crypto App Title -->
+            <lightning-layout-item
+                padding="around-small"
+                flexibility="auto"
+                size="12"
+            >
+                <c-page-header heading="Crypto App"> </c-page-header>
+            </lightning-layout-item>
+            <!-- !SECTION -->
+
+            <!-- SECTION : Body Start -->
+
+            <!-- SECTION : Crypto Data Table -->
+            <lightning-layout-item
+                padding="around-small"
+                flexibility="auto"
+                size="12"
+                medium-device-size="8"
+            >
+                <lightning-card
+                    class="slds-m-around_small"
+                    title="Yahoo Finance"
+                >
+                    <div class="slds-p-around_small">
+                        <lightning-datatable
+                            key-field="id"
+                            data={rawJsonData.yahooFinance}
+                            columns={columns}
+                        >
+                        </lightning-datatable>
+                    </div>
+                </lightning-card>
+                <lightning-card title="Wazir" class="slds-m-around_small">
+                    <div class="slds-p-around_small">
+                        <lightning-datatable
+                            key-field="id"
+                            data={rawJsonData.wazir}
+                            columns={columnsWazir}
+                        >
+                        </lightning-datatable>
+                    </div>
+                </lightning-card>
+            </lightning-layout-item>
+            <!-- !SECTION -->
+
+            <lightning-layout-item
+                flexibility="auto"
+                padding="around-small"
+                size="12"
+                medium-device-size="4"
+            >
+            </lightning-layout-item>
+            <!-- !SECTION -->
+        </lightning-layout>
+    </div>
+</template>
