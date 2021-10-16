@@ -18,17 +18,18 @@
                 padding="around-small"
                 flexibility="auto"
                 size="12"
-                medium-device-size="8"
+                medium-device-size="12"
             >
                 <lightning-card
                     class="slds-m-around_small"
                     title="Yahoo Finance"
                 >
-                    <div class="slds-p-around_small">
+                    <div class="slds-p-around_small full-width">
                         <lightning-datatable
                             key-field="id"
                             data={rawJsonData.yahooFinance}
                             columns={columns}
+                            class="full-width"
                         >
                         </lightning-datatable>
                     </div>

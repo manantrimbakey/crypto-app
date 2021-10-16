@@ -28,7 +28,14 @@ app.get('/coinData', (req, res) => {
 
     for (let i = 0; i < objKeysYahoo.length; i++) {
         const element = objKeysYahoo[i];
-        resultJsonYahoo.push(coinsData[element].quoteResponse.result[0]);
+        if (
+            coinsData[element].quoteResponse &&
+            coinsData[element].quoteResponse.result
+        ) {
+            resultJsonYahoo.push(coinsData[element].quoteResponse.result[0]);
+        } else if (coinsData[element].symbol) {
+            resultJsonYahoo.push(coinsData[element]);
+        }
     }
 
     let resultJsonWazir = [];
@@ -66,6 +73,8 @@ const hostName = 'query1.finance.yahoo.com';
 const urlPath =
     '/v7/finance/quote?&symbols=@COIN@-INR&fields=extendedMarketChange,extendedMarketChangePercent,extendedMarketPrice,extendedMarketTime,regularMarketChange,regularMarketChangePercent,regularMarketPrice,regularMarketTime,circulatingSupply,ask,askSize,bid,bidSize,dayHigh,dayLow,regularMarketDayHigh,regularMarketDayLow,regularMarketVolume,volume';
 const wazirURL = '/api/v2/trades?market=@COIN@&limit=1';
+const usdtLink =
+    '/v8/finance/chart/INR=X?region=US&lang=en-US&includePrePost=false&interval=2m&useYfid=true&range=1d&corsDomain=finance.yahoo.com&.tsrc=finance';
 
 const optionsYahoo = {
     hostname: hostName,
@@ -78,6 +87,13 @@ const optionsWazir = {
     hostname: 'x.wazirx.com',
     port: 443,
     path: wazirURL,
+    method: 'GET'
+};
+
+const optionsUSDT = {
+    hostname: hostName,
+    port: 443,
+    path: usdtLink,
     method: 'GET'
 };
 
@@ -163,5 +179,47 @@ const fetchDataWazir = async function () {
     }, 1000);
 };
 
+const fetchDataUSDT = async function () {
+    setInterval(() => {
+        let optionsUSDTURL = optionsUSDT;
+
+        var flagYahooUSDT = false;
+        pollData(
+            optionsUSDTURL,
+            (param) => {
+                let eachCoinData = JSON.parse(param);
+
+                // console.log(JSON.stringify(eachCoinData.chart.result[0].meta.regularMarketPrice));
+                if (
+                    eachCoinData.chart &&
+                    eachCoinData.chart.result &&
+                    eachCoinData.chart.result[0] &&
+                    eachCoinData.chart.result[0].meta &&
+                    eachCoinData.chart.result[0].meta.regularMarketPrice
+                ) {
+                    // console.log(eachCoinData.chart.result[0].meta.regularMarketPrice);
+                    coinsData['USDT'] = {
+                        symbol: 'USDT',
+                        regularMarketPrice:
+                            eachCoinData.chart.result[0].meta
+                                .regularMarketPrice,
+                        regularMarketDayRange: null,
+                        fiftyTwoWeekRange: null
+                    };
+                }
+                flagYahooUSDT = true;
+            },
+            (error) => {
+                console.error(error);
+                flagYahooUSDT = false;
+            }
+        );
+
+        // i++;
+        // index = i % coinsList.length;
+    }, 1000);
+};
+
 fetchData();
 fetchDataWazir();
+fetchDataUSDT();

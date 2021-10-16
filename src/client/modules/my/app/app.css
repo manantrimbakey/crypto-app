@@ -36,3 +36,7 @@ img {
 .greeting {
     height: 75px;
 }
+
+.full-width {
+    width: 100%;
+}
